@@ -1,7 +1,30 @@
+<?php
+
+$mode = "TEST";
+$appId = "MTA2OTkyMDE1ODE0NDIyNTExNjYjIz";
+$secretKey = "63ca0b83c8ca85d73fff9c3fd29a7c87e292fd63";
+
+$orderId = time();
+$orderAmount = 1;
+$customerName = "John Doe";
+$customerPhone = "9900012345";
+$customerEmail = "jdoe@gmail.com";
+$notifyUrl = "https://www.test.com/notify";
+$orderNote = "Extra Info";
+$pc = "";
+
+ // get secret key from your config
+$tokenData = "appId=".$appId."&orderId=".$orderId."&orderAmount=".$orderAmount."&customerEmail=".$customerEmail."&customerPhone=".$customerPhone;
+
+$token = hash_hmac('sha256', $tokenData, $secretKey, true);
+$paymentToken = base64_encode($token);
+
+?>
+
 <html>
   <head>
     <title>PayForm</title>
-    <script src="https://www.gocashfree.com/assets/cashfree.sdk.v1.js" type="text/javascript"></script>
+    <script src="http://devo.gocashfree.com/billpay/assets/cashfree-sdk.js" type="text/javascript"></script>
   </head>
   <body>
     <script type="text/javascript">  
@@ -11,25 +34,24 @@
       var payUpi = null;
 
       (function() {
-        var paymentToken = "<INSERT_PAYMENT_TOKEN_VALUE_HERE>";
 
         var data = {};
-        data.appId = "MTA2OTkyMDE1ODE0NDIyNTExNjYjIz";
-        data.orderId = "CFTEST00001";
-        data.orderAmount = 100;
-        data.customerName = "John Doe";
-        data.customerPhone = "9900012345";
-        data.customerEmail = "jdoe@mail.com";
-        data.notifyUrl = "https://www.test.com/notify";
-        data.orderNote = "Extra Info";
-        data.pc = "";
+        data.appId = "<?php echo $appId; ?>";
+        data.orderId = "<?php echo $orderId; ?>";
+        data.orderAmount = <?php echo $orderAmount; ?>;
+        data.customerName = "<?php echo $customerName; ?>";
+        data.customerPhone = "<?php echo $customerPhone; ?>";
+        data.customerEmail = "<?php echo $customerEmail; ?>";
+        data.notifyUrl = "<?php echo $notifyUrl; ?>";
+        data.orderNote = "<?php echo $orderNote; ?>";
+        data.pc = "<?php echo $pc; ?>";
 
-        data.paymentToken = paymentToken;
+        data.paymentToken = "<?php echo $paymentToken; ?>";
         
         var config = {};
         config.layout = {};
         config.checkout = "transparent";
-        config.mode = "TEST";
+        config.mode = "<?php echo $mode; ?>";
         var response = CashFree.init(config);
 
         if (response.status != "OK") {
